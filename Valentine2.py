@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template_string
 
 app = Flask(__name__)
@@ -8,7 +9,7 @@ HTML_PAGE = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For My Favorite Person ❤️</title>
+    <title>A Special Question ❤️</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -17,7 +18,6 @@ HTML_PAGE = """
         }
 
         body {
-            /* Animated gradient background */
             background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
@@ -52,7 +52,7 @@ HTML_PAGE = """
         h1 {
             font-family: 'Dancing Script', cursive;
             color: #d81159;
-            font-size: 2.8em;
+            font-size: 2.5em;
             margin-bottom: 20px;
         }
 
@@ -121,7 +121,7 @@ HTML_PAGE = """
 
     <div class="card">
         <h1 id="headline">Will you be my Valentine, Achu? 🌹</h1>
-
+        
         <div class="btn-container" id="btn-wrap">
             <button class="yes-btn" id="yesBtn" onclick="celebrate()">Yes! 💖</button>
             <button class="no-btn" id="noBtn" onmouseover="teleportButton()" onclick="noClicked()">No 🙊</button>
@@ -133,7 +133,7 @@ HTML_PAGE = """
         </div>
 
         <div id="no-message-area">
-            <p>Wait... you actually clicked it? 🥺<br><br>
+            <p>Wait... you actually caught it? 🥺<br><br>
             Are you <i>absolutely</i> sure? My heart is slightly broken!</p>
             <button class="yes-btn" style="margin-top: 10px;" onclick="celebrate()">Okay, I change my mind! 💖</button>
         </div>
@@ -145,10 +145,8 @@ HTML_PAGE = """
         const romanticSong = document.getElementById('romanticSong');
         let hoverCount = 0;
 
-        // The button moves when hovered to tease him
         function teleportButton() {
             hoverCount++;
-            // It jumps around for 5 tries, then stays still so he can click it
             if (hoverCount < 6) {
                 const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 50);
                 const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 50);
@@ -165,16 +163,12 @@ HTML_PAGE = """
         }
 
         function celebrate() {
-            // Play Music
-            romanticSong.play().catch(e => console.log("Music play pending interaction."));
-
-            // UI Updates
+            romanticSong.play().catch(e => console.log("Music play blocked."));
             document.getElementById('btn-wrap').style.display = 'none';
             document.getElementById('no-message-area').style.display = 'none';
             document.getElementById('headline').innerText = "Yay! Best Day Ever! 🥰";
             document.getElementById('message-area').style.display = 'block';
 
-            // Confetti Cannon
             var end = Date.now() + (7 * 1000);
             (function frame() {
               confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff4d6d', '#ffffff'] });
@@ -183,7 +177,6 @@ HTML_PAGE = """
             }());
         }
 
-        // Floating Hearts
         function spawnHeart() {
             const heart = document.createElement("div");
             heart.innerHTML = "❤️";
@@ -194,7 +187,7 @@ HTML_PAGE = """
             document.body.appendChild(heart);
             const flow = heart.animate([
                 { transform: 'translateY(0)', opacity: 0.8 },
-                { transform: `translateY(-110vh) translateX(${Math.random() * 40}px)`, opacity: 0 }
+                { transform: `translateY(-110vh)`, opacity: 0 }
             ], { duration: 6000 });
             flow.onfinish = () => heart.remove();
         }
@@ -204,12 +197,11 @@ HTML_PAGE = """
 </html>
 """
 
-
 @app.route("/")
 def home():
     return render_template_string(HTML_PAGE)
 
-
 if __name__ == "__main__":
-    # Port 5001 avoids the macOS AirPlay conflict
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    # This part allows Render to set the port automatically
+    port = int(os.environ.get("PORT", 5001))
+    app.run(host="0.0.0.0", port=port)
